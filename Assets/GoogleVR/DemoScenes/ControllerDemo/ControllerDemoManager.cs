@@ -49,24 +49,26 @@ public class ControllerDemoManager : MonoBehaviour {
 
     if (dragging) {
       if (GvrController.TouchUp) {
-        EndDragging();
+        //EndDragging();
       }
     } else {
       RaycastHit hitInfo;
       Vector3 rayDirection = GvrController.Orientation * Vector3.forward;
       if (Physics.Raycast(Vector3.zero, rayDirection, out hitInfo)) {
-        if (hitInfo.collider && hitInfo.collider.gameObject) {
-          SetSelectedObject(hitInfo.collider.gameObject);
+        if (hitInfo.collider && hitInfo.collider.gameObject && hitInfo.collider.gameObject.tag == "Thumbnail") {
+			messageText.text = "Hitting a thumbnail";
+          //SetSelectedObject(hitInfo.collider.gameObject);
         }
       } else {
-        SetSelectedObject(null);
+        //SetSelectedObject(null);
       }
       if (GvrController.TouchDown && selectedObject != null) {
-        StartDragging();
+        //StartDragging();
       }
     }
   }
-
+		
+/*
   private void SetSelectedObject(GameObject obj) {
     if (null != selectedObject) {
       selectedObject.GetComponent<Renderer>().material = cubeInactiveMaterial;
@@ -76,6 +78,7 @@ public class ControllerDemoManager : MonoBehaviour {
     }
     selectedObject = obj;
   }
+
 
   private void StartDragging() {
     dragging = true;
@@ -93,12 +96,13 @@ public class ControllerDemoManager : MonoBehaviour {
     // Stop dragging the cube along.
     selectedObject.transform.SetParent(null, true);
   }
+  */
 
   private void UpdateStatusMessage() {
     // This is an example of how to process the controller's state to display a status message.
     switch (GvrController.State) {
       case GvrConnectionState.Connected:
-        messageCanvas.SetActive(false);
+        //messageCanvas.SetActive(false);
         break;
       case GvrConnectionState.Disconnected:
         messageText.text = "Controller disconnected.";
