@@ -14,15 +14,14 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class ControllerDemoManager : MonoBehaviour {
   public GameObject controllerPivot;
   public GameObject messageCanvas;
   public Text messageText;
 
-  public Material cubeInactiveMaterial;
-  public Material cubeHoverMaterial;
-  public Material cubeActiveMaterial;
+  public MediaPlayerCtrl mediaPlayer;
 
   private Renderer controllerCursorRenderer;
 
@@ -56,30 +55,35 @@ public class ControllerDemoManager : MonoBehaviour {
       Vector3 rayDirection = GvrController.Orientation * Vector3.forward;
       if (Physics.Raycast(Vector3.zero, rayDirection, out hitInfo)) {
         if (hitInfo.collider && hitInfo.collider.gameObject && hitInfo.collider.gameObject.tag == "Thumbnail") {
-			messageText.text = "Hitting a thumbnail";
-          //SetSelectedObject(hitInfo.collider.gameObject);
+		  	SetSelectedObject(hitInfo.collider.gameObject);
         }
       } else {
-        //SetSelectedObject(null);
+        SetSelectedObject(null);
       }
+	  if (GvrController.TouchDown) {
+	    Debug.Log ("Touching Down");
+		if (selectedObject != null) {
+			Debug.Log ("selectedobj is not null");
+		} else {
+			Debug.Log ("selectedobj is null");
+		}
+	  }
       if (GvrController.TouchDown && selectedObject != null) {
-        //StartDragging();
+		Debug.Log("Clicking a thumbnail");
+		Debug.Log("mediaPlayerCtrl: " + mediaPlayer.ToString());
+		mediaPlayer.Stop();
+		mediaPlayer.Load("EasyMovieTexture.mp4");
+		mediaPlayer.Play();
       }
     }
   }
 		
-/*
+
   private void SetSelectedObject(GameObject obj) {
-    if (null != selectedObject) {
-      selectedObject.GetComponent<Renderer>().material = cubeInactiveMaterial;
-    }
-    if (null != obj) {
-      obj.GetComponent<Renderer>().material = cubeHoverMaterial;
-    }
     selectedObject = obj;
   }
 
-
+/*
   private void StartDragging() {
     dragging = true;
     selectedObject.GetComponent<Renderer>().material = cubeActiveMaterial;

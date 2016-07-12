@@ -751,6 +751,7 @@ public class MediaPlayerCtrl : MonoBehaviour
 
     public void Play()
     {
+		Debug.Log ("PLAYING MOVIE");
         if (m_bStop == true)
         {
 			SeekTo(0);
@@ -770,6 +771,7 @@ public class MediaPlayerCtrl : MonoBehaviour
 
     public void Stop()
     {
+		Debug.Log ("STOPPING MOVIE");
         if (m_CurrentState == MEDIAPLAYER_STATE.PLAYING)
             Call_Pause();
 
@@ -789,6 +791,7 @@ public class MediaPlayerCtrl : MonoBehaviour
 
     public void Load(string strFileName)
     {
+		Debug.Log ("LOADING MOVIE");
         if (GetCurrentState() != MEDIAPLAYER_STATE.NOT_READY)
             UnLoad();
 
