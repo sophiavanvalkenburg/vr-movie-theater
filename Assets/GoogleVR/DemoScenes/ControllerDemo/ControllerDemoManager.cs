@@ -54,8 +54,10 @@ public class ControllerDemoManager : MonoBehaviour {
       RaycastHit hitInfo;
       Vector3 rayDirection = GvrController.Orientation * Vector3.forward;
       if (Physics.Raycast(Vector3.zero, rayDirection, out hitInfo)) {
-        if (hitInfo.collider && hitInfo.collider.gameObject && hitInfo.collider.gameObject.tag == "Thumbnail") {
-		  	SetSelectedObject(hitInfo.collider.gameObject);
+				if (hitInfo.collider && hitInfo.collider.gameObject ) {
+					Debug.Log ("Touching  something: " + hitInfo.collider.gameObject.tag);
+					if (hitInfo.collider.gameObject.tag == "Thumbnail" || hitInfo.collider.gameObject.tag == "Light")
+		  				SetSelectedObject(hitInfo.collider.gameObject);
         }
       } else {
         SetSelectedObject(null);
@@ -68,13 +70,40 @@ public class ControllerDemoManager : MonoBehaviour {
 			Debug.Log ("selectedobj is null");
 		}
 	  }
-      if (GvrController.TouchDown && selectedObject != null) {
-		Debug.Log("Clicking a thumbnail");
-		Debug.Log("mediaPlayerCtrl: " + mediaPlayer.ToString());
-		mediaPlayer.Stop();
-		mediaPlayer.Load("EasyMovieTexture.mp4");
-		mediaPlayer.Play();
-      }
+
+	
+      if (selectedObject != null) {
+				switch (selectedObject.tag) {
+				case "Thumbnail": 
+					if (GvrController.TouchDown) {
+						Debug.Log ("Clicking a thumbnail");
+						Debug.Log ("mediaPlayerCtrl: " + mediaPlayer.ToString ());
+						mediaPlayer.Stop ();
+						mediaPlayer.Load ("EasyMovieTexture.mp4");
+						mediaPlayer.Play ();
+					}
+					break;
+				case "Light":
+					Debug.Log ("Clicking a light");
+					Slider lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Slider> ();
+
+					if (GvrController.TouchDown) {
+						if (lightSwitch.value > 0) {
+							LightOff ();
+							lightSwitch.value = 0;
+						} else {
+							LightOn ();
+							lightSwitch.value = 1f;
+						}
+					} else {
+						//hovering
+						lightSwitch.Select();
+					}
+					break;
+				}
+		
+			}
+
     }
   }
 		
@@ -134,4 +163,31 @@ public class ControllerDemoManager : MonoBehaviour {
         break;
     }
   }
+
+	public void LightOff() {
+		float exposure = 0.3f;
+		RenderSettings.skybox.SetFloat ("_Exposure", exposure);
+	}
+
+	public void LightOn() {
+		float exposure = 1f;
+		RenderSettings.skybox.SetFloat ("_Exposure", exposure);
+	}
+
+	public void SetLight (float on) {
+		Debug.Log("Light toggled!" + on);
+		if (on > 0) {
+			LightOn();
+		} else {
+			LightOff(); 
+		}
+	}
+	public void ToggleLight (bool on) {
+		Debug.Log("Light toggled!" + on);
+		if (on) {
+			LightOn();
+		} else {
+			LightOff(); 
+		}
+	}
 }
