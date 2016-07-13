@@ -14,81 +14,122 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
-public class ControllerDemoManager : MonoBehaviour {
-  public GameObject controllerPivot;
-  public GameObject messageCanvas;
-  public Text messageText;
+public class ControllerDemoManager : MonoBehaviour
+{
+	public GameObject controllerPivot;
+	public GameObject messageCanvas;
+	public Text messageText;
 
-  public MediaPlayerCtrl mediaPlayer;
-  public Material thumbnailHoverMaterial;
-  public Material thumbnailInactiveMaterial;
+	public MediaPlayerCtrl mediaPlayer;
+	public Material thumbnailHoverMaterial;
+	public Material thumbnailInactiveMaterial;
 
-  private Renderer controllerCursorRenderer;
 
-  // Currently selected GameObject.
-  private GameObject selectedObject;
+	private Renderer controllerCursorRenderer;
 
-  // True if we are dragging the currently selected GameObject.
-  private bool dragging;
+	// Currently selected GameObject.
+	private GameObject selectedObject;
 
-  void Awake() {
-  }
 
-  void Update() {
-    UpdatePointer();
-    UpdateStatusMessage();
-  }
+	void Awake ()
+	{
+	}
 
-  private void UpdatePointer() {
-    if (GvrController.State != GvrConnectionState.Connected) {
-      controllerPivot.SetActive(false);
-    }
-    controllerPivot.SetActive(true);
-    controllerPivot.transform.rotation = GvrController.Orientation;
+	void Update ()
+	{
+		UpdatePointer ();
+		UpdateStatusMessage ();
+	}
 
-    if (dragging) {
-      if (GvrController.TouchUp) {
-        //EndDragging();
-      }
-    } else {
-      RaycastHit hitInfo;
-      Vector3 rayDirection = GvrController.Orientation * Vector3.forward;
-      if (Physics.Raycast(Vector3.zero, rayDirection, out hitInfo)) {
-		Debug.Log ("Raycast is true");
-		Debug.Log (hitInfo.collider.ToString ());
-		if (hitInfo.collider && hitInfo.collider.gameObject /*&& hitInfo.collider.gameObject.tag == "Thumbnail"*/) {
-			Debug.Log ("Hitting something");
-			SetSelectedObject(hitInfo.collider.gameObject);
-        }
-      } else {
-        //SetSelectedObject(null);
-      }
-      if (GvrController.TouchDown && selectedObject != null) {
-		Debug.Log("Clicking a thumbnail");
-		Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
-		if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
-			Debug.Log ("thumbnail has movie " + thumbnailObject.movieFileName);
-			mediaPlayer.Stop();
-			mediaPlayer.Load(thumbnailObject.movieFileName);
-			mediaPlayer.Play();
+	private void UpdatePointer ()
+	{
+		if (GvrController.State != GvrConnectionState.Connected) {
+			controllerPivot.SetActive (false);
 		}
-      }
-    }
-  }
+		controllerPivot.SetActive (true);
+		controllerPivot.transform.rotation = GvrController.Orientation;
+   
+		// raycast and get a selected object if it's hit
+		RaycastHit hitInfo;
+		Vector3 rayDirection = GvrController.Orientation * Vector3.forward;
+		if (Physics.Raycast (Vector3.zero, rayDirection, out hitInfo)) {
+			Debug.Log ("Raycast is true");
+			Debug.Log (hitInfo.collider.ToString ());
+			if (hitInfo.collider && hitInfo.collider.gameObject /*&& hitInfo.collider.gameObject.tag == "Thumbnail"*/) {
+				Debug.Log ("Hitting something");
+				SetSelectedObject (hitInfo.collider.gameObject);
+			}
+		} else {
+			SetSelectedObject (null); 
+		}
+		if (GvrController.TouchDown && selectedObject != null) {
+			Debug.Log ("Clicking a thumbnail");
+			Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
+			if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
+				Debug.Log ("thumbnail has movie " + thumbnailObject.movieFileName);
+				mediaPlayer.Stop ();
+				mediaPlayer.Load (thumbnailObject.movieFileName);
+				mediaPlayer.Play ();
+			}
+		}
+		// some debug messages
+		if (GvrController.TouchDown) {
+			Debug.Log ("Touching Down");
+			if (selectedObject != null) {
+				Debug.Log ("selectedobj is not null");
+			} else {
+				Debug.Log ("selectedobj is null");
+			}
+		}
+		// click a thumbnail or the light switch
+		if (selectedObject != null) {
+			switch (selectedObject.tag) {
+			case "Thumbnail": 
+				if (GvrController.TouchDown) {
+					Debug.Log ("Clicking a thumbnail");
+					Debug.Log ("mediaPlayerCtrl: " + mediaPlayer.ToString ());
+					mediaPlayer.Stop ();
+					mediaPlayer.Load ("EasyMovieTexture.mp4");
+					mediaPlayer.Play ();
+				}
+				break;
+			case "Light":
+				Debug.Log ("Clicking a light");
+				Slider lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Slider> ();
+
+				if (GvrController.TouchDown) {
+					if (lightSwitch.value > 0) {
+						LightOff ();
+						lightSwitch.value = 0;
+					} else {
+						LightOn ();
+						lightSwitch.value = 1f;
+					}
+				} else {
+					//hovering
+					lightSwitch.Select ();
+				}
+				break;
+			}
 		
-
-  private void SetSelectedObject(GameObject obj) {
-	if (null != selectedObject) {
-		selectedObject.GetComponent<Renderer>().material = thumbnailInactiveMaterial;
+		}
+    
 	}
-	if (null != obj) {
-		obj.GetComponent<Renderer>().material = thumbnailHoverMaterial;
-	}
-	selectedObject = obj;
-  }
 
-/*
+	private void SetSelectedObject (GameObject obj)
+	{
+		if (null != selectedObject) {
+			selectedObject.GetComponent<Renderer> ().material = thumbnailInactiveMaterial;
+		}
+		if (null != obj) {
+			obj.GetComponent<Renderer> ().material = thumbnailHoverMaterial;
+		}
+		selectedObject = obj;
+	}
+
+	/*
   private void StartDragging() {
     dragging = true;
     selectedObject.GetComponent<Renderer>().material = cubeActiveMaterial;
@@ -107,36 +148,69 @@ public class ControllerDemoManager : MonoBehaviour {
   }
   */
 
-  private void UpdateStatusMessage() {
-    // This is an example of how to process the controller's state to display a status message.
-    switch (GvrController.State) {
-      case GvrConnectionState.Connected:
+	private void UpdateStatusMessage ()
+	{
+		// This is an example of how to process the controller's state to display a status message.
+		switch (GvrController.State) {
+		case GvrConnectionState.Connected:
         //messageCanvas.SetActive(false);
-        break;
-      case GvrConnectionState.Disconnected:
-        messageText.text = "Controller disconnected.";
-        messageText.color = Color.white;
-        messageCanvas.SetActive(true);
-        break;
-      case GvrConnectionState.Scanning:
-        messageText.text = "Controller scanning...";
-        messageText.color = Color.cyan;
-        messageCanvas.SetActive(true);
-        break;
-      case GvrConnectionState.Connecting:
-        messageText.text = "Controller connecting...";
-        messageText.color = Color.yellow;
-        messageCanvas.SetActive(true);
-        break;
-      case GvrConnectionState.Error:
-        messageText.text = "ERROR: " + GvrController.ErrorDetails;
-        messageText.color = Color.red;
-        messageCanvas.SetActive(true);
-        break;
-      default:
+			break;
+		case GvrConnectionState.Disconnected:
+			messageText.text = "Controller disconnected.";
+			messageText.color = Color.white;
+			messageCanvas.SetActive (true);
+			break;
+		case GvrConnectionState.Scanning:
+			messageText.text = "Controller scanning...";
+			messageText.color = Color.cyan;
+			messageCanvas.SetActive (true);
+			break;
+		case GvrConnectionState.Connecting:
+			messageText.text = "Controller connecting...";
+			messageText.color = Color.yellow;
+			messageCanvas.SetActive (true);
+			break;
+		case GvrConnectionState.Error:
+			messageText.text = "ERROR: " + GvrController.ErrorDetails;
+			messageText.color = Color.red;
+			messageCanvas.SetActive (true);
+			break;
+		default:
         // Shouldn't happen.
-        Debug.LogError("Invalid controller state: " + GvrController.State);
-        break;
-    }
-  }
+			Debug.LogError ("Invalid controller state: " + GvrController.State);
+			break;
+		}
+	}
+
+	public void LightOff ()
+	{
+		float exposure = 0.3f;
+		RenderSettings.skybox.SetFloat ("_Exposure", exposure);
+	}
+
+	public void LightOn ()
+	{
+		float exposure = 1f;
+		RenderSettings.skybox.SetFloat ("_Exposure", exposure);
+	}
+
+	public void SetLight (float on)
+	{
+		Debug.Log ("Light toggled!" + on);
+		if (on > 0) {
+			LightOn ();
+		} else {
+			LightOff (); 
+		}
+	}
+
+	public void ToggleLight (bool on)
+	{
+		Debug.Log ("Light toggled!" + on);
+		if (on) {
+			LightOn ();
+		} else {
+			LightOff (); 
+		}
+	}
 }
