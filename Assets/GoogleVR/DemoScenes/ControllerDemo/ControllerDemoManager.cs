@@ -20,9 +20,9 @@ public class ControllerDemoManager : MonoBehaviour {
   public GameObject messageCanvas;
   public Text messageText;
 
-  public Material cubeInactiveMaterial;
-  public Material cubeHoverMaterial;
-  public Material cubeActiveMaterial;
+  public MediaPlayerCtrl mediaPlayer;
+  public Material thumbnailHoverMaterial;
+  public Material thumbnailInactiveMaterial;
 
   private Renderer controllerCursorRenderer;
 
@@ -55,31 +55,40 @@ public class ControllerDemoManager : MonoBehaviour {
       RaycastHit hitInfo;
       Vector3 rayDirection = GvrController.Orientation * Vector3.forward;
       if (Physics.Raycast(Vector3.zero, rayDirection, out hitInfo)) {
-        if (hitInfo.collider && hitInfo.collider.gameObject && hitInfo.collider.gameObject.tag == "Thumbnail") {
-			messageText.text = "Hitting a thumbnail";
-          //SetSelectedObject(hitInfo.collider.gameObject);
+		Debug.Log ("Raycast is true");
+		Debug.Log (hitInfo.collider.ToString ());
+		if (hitInfo.collider && hitInfo.collider.gameObject /*&& hitInfo.collider.gameObject.tag == "Thumbnail"*/) {
+			Debug.Log ("Hitting something");
+			SetSelectedObject(hitInfo.collider.gameObject);
         }
       } else {
         //SetSelectedObject(null);
       }
       if (GvrController.TouchDown && selectedObject != null) {
-        //StartDragging();
+		Debug.Log("Clicking a thumbnail");
+		Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
+		if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
+			Debug.Log ("thumbnail has movie " + thumbnailObject.movieFileName);
+			mediaPlayer.Stop();
+			mediaPlayer.Load(thumbnailObject.movieFileName);
+			mediaPlayer.Play();
+		}
       }
     }
   }
 		
-/*
+
   private void SetSelectedObject(GameObject obj) {
-    if (null != selectedObject) {
-      selectedObject.GetComponent<Renderer>().material = cubeInactiveMaterial;
-    }
-    if (null != obj) {
-      obj.GetComponent<Renderer>().material = cubeHoverMaterial;
-    }
-    selectedObject = obj;
+	if (null != selectedObject) {
+		selectedObject.GetComponent<Renderer>().material = thumbnailInactiveMaterial;
+	}
+	if (null != obj) {
+		obj.GetComponent<Renderer>().material = thumbnailHoverMaterial;
+	}
+	selectedObject = obj;
   }
 
-
+/*
   private void StartDragging() {
     dragging = true;
     selectedObject.GetComponent<Renderer>().material = cubeActiveMaterial;
