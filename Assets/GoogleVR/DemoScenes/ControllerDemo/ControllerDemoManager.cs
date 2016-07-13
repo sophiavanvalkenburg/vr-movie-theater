@@ -52,6 +52,68 @@ public class ControllerDemoManager : MonoBehaviour
 		controllerPivot.transform.rotation = GvrController.Orientation;
    
 		// raycast and get a selected object if it's hit
+		selectObjectIfHit();
+
+		// some debug messages
+		if (GvrController.TouchDown) {
+			Debug.Log ("Touching Down");
+			if (selectedObject != null) {
+				Debug.Log ("selectedobj is not null");
+			} else {
+				Debug.Log ("selectedobj is null");
+			}
+		}
+
+		// click a thumbnail or the light switch
+		if (selectedObject != null) {
+			switch (selectedObject.tag) {
+			case "Thumbnail": 
+				selectThumbnailAction ();
+				break;
+			case "Light":
+				selectLightSwitchAction ();
+				break;
+			}
+		
+		}
+    
+	}
+
+	private void selectLightSwitchAction()
+	{
+		Debug.Log ("Clicking a light");
+		Slider lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Slider> ();
+
+		if (GvrController.TouchDown) {
+			if (lightSwitch.value > 0) {
+				LightOff ();
+				lightSwitch.value = 0;
+			} else {
+				LightOn ();
+				lightSwitch.value = 1f;
+			}
+		} else {
+			//hovering
+			lightSwitch.Select ();
+		}
+	}
+
+	private void selectThumbnailAction ()
+	{
+		if (GvrController.TouchDown) {
+			Debug.Log ("Clicking a thumbnail");
+			Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
+			if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
+				Debug.Log ("thumbnail has movie " + thumbnailObject.movieFileName);
+				mediaPlayer.Stop ();
+				mediaPlayer.Load (thumbnailObject.movieFileName);
+				mediaPlayer.Play ();
+			}
+		}
+	}
+
+	private void selectObjectIfHit()
+	{
 		RaycastHit hitInfo;
 		Vector3 rayDirection = GvrController.Orientation * Vector3.forward;
 		if (Physics.Raycast (Vector3.zero, rayDirection, out hitInfo)) {
@@ -64,58 +126,6 @@ public class ControllerDemoManager : MonoBehaviour
 		} else {
 			SetSelectedObject (null); 
 		}
-		if (GvrController.TouchDown && selectedObject != null) {
-			Debug.Log ("Clicking a thumbnail");
-			Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
-			if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
-				Debug.Log ("thumbnail has movie " + thumbnailObject.movieFileName);
-				mediaPlayer.Stop ();
-				mediaPlayer.Load (thumbnailObject.movieFileName);
-				mediaPlayer.Play ();
-			}
-		}
-		// some debug messages
-		if (GvrController.TouchDown) {
-			Debug.Log ("Touching Down");
-			if (selectedObject != null) {
-				Debug.Log ("selectedobj is not null");
-			} else {
-				Debug.Log ("selectedobj is null");
-			}
-		}
-		// click a thumbnail or the light switch
-		if (selectedObject != null) {
-			switch (selectedObject.tag) {
-			case "Thumbnail": 
-				if (GvrController.TouchDown) {
-					Debug.Log ("Clicking a thumbnail");
-					Debug.Log ("mediaPlayerCtrl: " + mediaPlayer.ToString ());
-					mediaPlayer.Stop ();
-					mediaPlayer.Load ("EasyMovieTexture.mp4");
-					mediaPlayer.Play ();
-				}
-				break;
-			case "Light":
-				Debug.Log ("Clicking a light");
-				Slider lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Slider> ();
-
-				if (GvrController.TouchDown) {
-					if (lightSwitch.value > 0) {
-						LightOff ();
-						lightSwitch.value = 0;
-					} else {
-						LightOn ();
-						lightSwitch.value = 1f;
-					}
-				} else {
-					//hovering
-					lightSwitch.Select ();
-				}
-				break;
-			}
-		
-		}
-    
 	}
 
 	private void SetSelectedObject (GameObject obj)
