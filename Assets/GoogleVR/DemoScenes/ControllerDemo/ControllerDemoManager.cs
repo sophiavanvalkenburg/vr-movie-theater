@@ -22,16 +22,24 @@ public class ControllerDemoManager : MonoBehaviour
 	public GameObject messageCanvas;
 	public Text messageText;
 
-	public MediaPlayerCtrl mediaPlayer;
+	public Material thumbnailHoverMaterial;
+	public Material thumbnailInactiveMaterial;
+	public ScreenController screenController;
 
 	private Renderer controllerCursorRenderer;
 
 	// Currently selected GameObject.
 	private GameObject selectedObject;
 
+	public LightController lightController;
 
 	void Awake ()
 	{
+	}
+
+	void Start () {
+		lightController = GameObject.Find ("BackgroundVideoManager").GetComponent<LightController> ();
+		screenController = GameObject.Find ("ScreenVideoManager").GetComponent<ScreenController> ();
 	}
 
 	void Update ()
@@ -78,16 +86,13 @@ public class ControllerDemoManager : MonoBehaviour
 
 	private void selectLightSwitchAction()
 	{
-		Debug.Log ("Clicking a light");
-		Slider lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Slider> ();
+		Toggle lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Toggle> ();
 
 		if (GvrController.TouchDown) {
-			if (lightSwitch.value > 0) {
-				LightOff ();
-				lightSwitch.value = 0;
+			if (lightSwitch.isOn) {
+				PlayVideo ();
 			} else {
-				LightOn ();
-				lightSwitch.value = 1f;
+				StopVideo ();
 			}
 		} else {
 			//hovering
@@ -190,35 +195,15 @@ public class ControllerDemoManager : MonoBehaviour
 		}
 	}
 
-	public void LightOff ()
+	public void PlayVideo ()
 	{
-		float exposure = 0.3f;
-		RenderSettings.skybox.SetFloat ("_Exposure", exposure);
+		Debug.Log ("DemoManager: Light off!");
+		screenController.Prepare ();
 	}
 
-	public void LightOn ()
+	public void StopVideo ()
 	{
-		float exposure = 1f;
-		RenderSettings.skybox.SetFloat ("_Exposure", exposure);
-	}
-
-	public void SetLight (float on)
-	{
-		Debug.Log ("Light toggled!" + on);
-		if (on > 0) {
-			LightOn ();
-		} else {
-			LightOff (); 
-		}
-	}
-
-	public void ToggleLight (bool on)
-	{
-		Debug.Log ("Light toggled!" + on);
-		if (on) {
-			LightOn ();
-		} else {
-			LightOff (); 
-		}
+		Debug.Log ("DemoManager: Light on!");
+		screenController.Stop ();
 	}
 }
