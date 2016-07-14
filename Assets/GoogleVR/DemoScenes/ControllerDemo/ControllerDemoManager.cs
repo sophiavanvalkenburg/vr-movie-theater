@@ -73,7 +73,7 @@ public class ControllerDemoManager : MonoBehaviour
 			case "Thumbnail": 
 				selectThumbnailAction ();
 				break;
-			case "Light":
+			case "Switch":
 				selectLightSwitchAction ();
 				break;
 			}
@@ -84,7 +84,7 @@ public class ControllerDemoManager : MonoBehaviour
 
 	private void selectLightSwitchAction()
 	{
-		Toggle lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Toggle> ();
+		LightSwitch lightSwitch = GameObject.Find ("Lever").GetComponent<LightSwitch> ();
 
 		if (GvrController.TouchDown) {
 			if (lightSwitch.isOn) {
@@ -92,9 +92,6 @@ public class ControllerDemoManager : MonoBehaviour
 			} else {
 				StopVideo ();
 			}
-		} else {
-			//hovering
-			lightSwitch.Select ();
 		}
 	}
 
