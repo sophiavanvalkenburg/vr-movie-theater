@@ -142,12 +142,12 @@ public class ControllerDemoManager : MonoBehaviour
 
 	private void SetSelectedObject (GameObject obj)
 	{
-		if (null != selectedObject) {
-			SetObjInactiveAppearance ();
+		if (obj && obj.tag == "Thumbnail") {
+			if (null != selectedObject && obj != selectedObject) {
+				SetObjInactiveAppearance ();
+			}
 		}
-		if (null != obj) {
-			SetObjHoverAppearance ();
-		}
+
 		selectedObject = obj;
 	}
 
