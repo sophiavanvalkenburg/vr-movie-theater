@@ -32,9 +32,14 @@ public class ControllerDemoManager : MonoBehaviour
 	// Currently selected GameObject.
 	private GameObject selectedObject;
 
+	public LightController lightController;
 
 	void Awake ()
 	{
+	}
+
+	void Start () {
+		lightController = GameObject.Find ("BackgroundVideoManager").GetComponent<LightController> ();
 	}
 
 	void Update ()
@@ -81,16 +86,13 @@ public class ControllerDemoManager : MonoBehaviour
 
 	private void selectLightSwitchAction()
 	{
-		Debug.Log ("Clicking a light");
-		Slider lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Slider> ();
+		Toggle lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Toggle> ();
 
 		if (GvrController.TouchDown) {
-			if (lightSwitch.value > 0) {
+			if (lightSwitch.isOn) {
 				LightOff ();
-				lightSwitch.value = 0;
 			} else {
 				LightOn ();
-				lightSwitch.value = 1f;
 			}
 		} else {
 			//hovering
@@ -117,10 +119,10 @@ public class ControllerDemoManager : MonoBehaviour
 		RaycastHit hitInfo;
 		Vector3 rayDirection = GvrController.Orientation * Vector3.forward;
 		if (Physics.Raycast (Vector3.zero, rayDirection, out hitInfo)) {
-			Debug.Log ("Raycast is true");
-			Debug.Log (hitInfo.collider.ToString ());
+//			Debug.Log ("Raycast is true");
+//			Debug.Log (hitInfo.collider.ToString ());
 			if (hitInfo.collider && hitInfo.collider.gameObject /*&& hitInfo.collider.gameObject.tag == "Thumbnail"*/) {
-				Debug.Log ("Hitting something");
+//				Debug.Log ("Hitting something");
 				SetSelectedObject (hitInfo.collider.gameObject);
 			}
 		} else {
@@ -194,33 +196,13 @@ public class ControllerDemoManager : MonoBehaviour
 
 	public void LightOff ()
 	{
-		float exposure = 0.3f;
-		RenderSettings.skybox.SetFloat ("_Exposure", exposure);
+		Debug.Log ("DemoManager: Light off!");
+		lightController.LightOff ();
 	}
 
 	public void LightOn ()
 	{
-		float exposure = 1f;
-		RenderSettings.skybox.SetFloat ("_Exposure", exposure);
-	}
-
-	public void SetLight (float on)
-	{
-		Debug.Log ("Light toggled!" + on);
-		if (on > 0) {
-			LightOn ();
-		} else {
-			LightOff (); 
-		}
-	}
-
-	public void ToggleLight (bool on)
-	{
-		Debug.Log ("Light toggled!" + on);
-		if (on) {
-			LightOn ();
-		} else {
-			LightOff (); 
-		}
+		Debug.Log ("DemoManager: Light on!");
+		lightController.LightOn ();
 	}
 }
