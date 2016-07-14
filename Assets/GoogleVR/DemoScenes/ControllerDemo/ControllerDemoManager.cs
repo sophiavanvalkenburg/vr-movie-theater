@@ -24,6 +24,7 @@ public class ControllerDemoManager : MonoBehaviour
 
 	public ScreenController screenController;
 	public LightController lightController;
+	LightSwitch lightSwitch;
 
 	private Renderer controllerCursorRenderer;
 
@@ -38,6 +39,7 @@ public class ControllerDemoManager : MonoBehaviour
 	void Start () {
 		lightController = GameObject.Find ("BackgroundVideoManager").GetComponent<LightController> ();
 		screenController = GameObject.Find ("ScreenVideoManager").GetComponent<ScreenController> ();
+		lightSwitch = GameObject.Find ("Lever").GetComponent<LightSwitch> ();
 	}
 
 	void Update ()
@@ -84,7 +86,6 @@ public class ControllerDemoManager : MonoBehaviour
 
 	private void selectLightSwitchAction()
 	{
-		LightSwitch lightSwitch = GameObject.Find ("Lever").GetComponent<LightSwitch> ();
 
 		if (GvrController.TouchDown) {
 			if (lightSwitch.isOn) {
@@ -92,6 +93,8 @@ public class ControllerDemoManager : MonoBehaviour
 			} else {
 				StopVideo ();
 			}
+		} else {
+			lightSwitch.Highlight ();
 		}
 	}
 
@@ -145,6 +148,8 @@ public class ControllerDemoManager : MonoBehaviour
 		if (null != selectedObject && obj != selectedObject) {
 			if (selectedObject.tag == "Thumbnail") {
 				SetObjInactiveAppearance ();
+			} else if (selectedObject.tag == "Switch") {
+				lightSwitch.RemoveHightlight ();
 			}
 		}
 		selectedObject = obj;

@@ -5,11 +5,13 @@ public class LightSwitch : MonoBehaviour {
 	public bool isOn;
 	GameObject handler;
 	GameObject lever;
+	Behaviour halo;
 
 	// Use this for initialization
 	void Start () {
 		handler = GameObject.Find ("Lever/Handler");
 		lever = GameObject.Find ("Lever");
+		halo = (Behaviour)GameObject.Find("Lever/Handler/StickBall/Ball").GetComponent("Halo");
 	}
 	
 	// Update is called once per frame
@@ -23,4 +25,13 @@ public class LightSwitch : MonoBehaviour {
 		}
 	
 	}
+
+	public void Highlight() {
+		halo.enabled = true;
+	}
+
+	public void RemoveHightlight() {
+		halo.enabled = false;
+	}
+
 }
