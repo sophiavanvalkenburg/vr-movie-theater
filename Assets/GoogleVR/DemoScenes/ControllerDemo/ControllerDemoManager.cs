@@ -23,9 +23,6 @@ public class ControllerDemoManager : MonoBehaviour
 	public Text messageText;
 
 	public MediaPlayerCtrl mediaPlayer;
-	public Material thumbnailHoverMaterial;
-	public Material thumbnailInactiveMaterial;
-
 
 	private Renderer controllerCursorRenderer;
 
@@ -103,6 +100,7 @@ public class ControllerDemoManager : MonoBehaviour
 		if (GvrController.TouchDown) {
 			Debug.Log ("Clicking a thumbnail");
 			Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
+			selectedObject.GetComponent<MeshRenderer> ().material.color = Color.black;
 			if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
 				Debug.Log ("thumbnail has movie " + thumbnailObject.movieFileName);
 				mediaPlayer.Stop ();
@@ -119,7 +117,7 @@ public class ControllerDemoManager : MonoBehaviour
 		if (Physics.Raycast (Vector3.zero, rayDirection, out hitInfo)) {
 			Debug.Log ("Raycast is true");
 			Debug.Log (hitInfo.collider.ToString ());
-			if (hitInfo.collider && hitInfo.collider.gameObject /*&& hitInfo.collider.gameObject.tag == "Thumbnail"*/) {
+			if (hitInfo.collider && hitInfo.collider.gameObject && hitInfo.collider.gameObject.tag == "Thumbnail") {
 				Debug.Log ("Hitting something");
 				SetSelectedObject (hitInfo.collider.gameObject);
 			}
@@ -131,10 +129,10 @@ public class ControllerDemoManager : MonoBehaviour
 	private void SetSelectedObject (GameObject obj)
 	{
 		if (null != selectedObject) {
-			selectedObject.GetComponent<Renderer> ().material = thumbnailInactiveMaterial;
+			selectedObject.GetComponent<MeshRenderer> ().material.color = Color.white;
 		}
 		if (null != obj) {
-			obj.GetComponent<Renderer> ().material = thumbnailHoverMaterial;
+			obj.GetComponent<MeshRenderer> ().material.color = Color.grey;
 		}
 		selectedObject = obj;
 	}
