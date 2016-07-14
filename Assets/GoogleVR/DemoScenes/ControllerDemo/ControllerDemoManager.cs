@@ -103,15 +103,14 @@ public class ControllerDemoManager : MonoBehaviour
 		if (GvrController.TouchDown) {
 			Debug.Log ("Clicking a thumbnail");
 			Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
-			SetObjTouchDownAppearance ();
+			SetObjTouchDownAppearance (selectedObject);
 			if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
-				Debug.Log ("thumbnail has movie " + thumbnailObject.movieFileName);
-				//mediaPlayer.Stop ();
-				//mediaPlayer.Load (thumbnailObject.movieFileName);
-				//mediaPlayer.Play ();
+				StopVideo ();
+				LoadVideo (thumbnailObject.movieFileName);
+				PlayVideo ();
 			}
 		} else {
-			SetObjHoverAppearance ();
+			SetObjHoverAppearance (selectedObject);
 		}
 	}
 
@@ -120,10 +119,7 @@ public class ControllerDemoManager : MonoBehaviour
 		RaycastHit hitInfo;
 		Vector3 rayDirection = GvrController.Orientation * Vector3.forward;
 		if (Physics.Raycast (Vector3.zero, rayDirection, out hitInfo)) {
-			Debug.Log ("Raycast is true");
-			Debug.Log (hitInfo.collider.ToString ());
 			if (hitInfo.collider && hitInfo.collider.gameObject && hitInfo.collider.gameObject.tag == "Thumbnail") {
-				Debug.Log ("Hitting something");
 				SetSelectedObject (hitInfo.collider.gameObject);
 			}
 		} else {
@@ -131,25 +127,25 @@ public class ControllerDemoManager : MonoBehaviour
 		}
 	}
 
-	private void SetObjTouchDownAppearance(){
-		selectedObject.GetComponent<MeshRenderer> ().material.color = Color.black;
+	private void SetObjTouchDownAppearance(GameObject obj){
+		obj.GetComponent<MeshRenderer> ().material.color = Color.black;
 	}
 
-	private void SetObjHoverAppearance(){
-		selectedObject.GetComponent<MeshRenderer> ().material.color = Color.grey;
+	private void SetObjHoverAppearance(GameObject obj){
+		obj.GetComponent<MeshRenderer> ().material.color = Color.cyan;
 	}
 
-	private void SetObjInactiveAppearance(){
-		selectedObject.GetComponent<MeshRenderer> ().material.color = Color.white;
+	private void SetObjInactiveAppearance(GameObject obj){
+		obj.GetComponent<MeshRenderer> ().material.color = Color.white;
 	}
 
 	private void SetSelectedObject (GameObject obj)
 	{
 		if (null != selectedObject) {
-			SetObjInactiveAppearance ();
+			SetObjInactiveAppearance (selectedObject);
 		}
 		if (null != obj) {
-			SetObjHoverAppearance ();
+			SetObjHoverAppearance (obj);
 		}
 		selectedObject = obj;
 	}
@@ -207,15 +203,21 @@ public class ControllerDemoManager : MonoBehaviour
 		}
 	}
 
+	public void LoadVideo(string filename)
+	{
+		Debug.Log ("DemoManager: loading " + filename);
+		screenController.Load (filename);
+	}
+
 	public void PlayVideo ()
 	{
-		Debug.Log ("DemoManager: Light off!");
+		Debug.Log ("DemoManager: Light off! Preparing video");
 		screenController.Prepare ();
 	}
 
 	public void StopVideo ()
 	{
-		Debug.Log ("DemoManager: Light on!");
+		Debug.Log ("DemoManager: Light on! stopping video");
 		screenController.Stop ();
 	}
 }

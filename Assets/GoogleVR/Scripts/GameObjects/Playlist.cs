@@ -6,9 +6,9 @@ public class Playlist : MonoBehaviour {
 
 	// hardcoded list of movies for now
 	private string[] movieFilenames = new string[3] {
-		"39851_1_sciencetake-humanoid_wg_480p.mp4",
-		"EasyMovieTexture.mp4",
-		"ed_1024_512kb.mp4"
+		"40169_1_23feralcats_wg_480p.mp4",
+		"c41047_1_sciencetake-coral-micro_wg_360p.mp4",
+		"41029_1_out-there-juno_wg_480p.mp4"
 	};
 
 	private string[] movieThumbnails = new string[3] {
@@ -31,9 +31,9 @@ public class Playlist : MonoBehaviour {
 			// set the grid as the parent of the thumbnail
 			thumbnailObj.transform.SetParent(gameObject.transform);
 			// calculate coordinates of each thumbnail (3 columns)
-			int x = 2*(i%3 - 2);
-			int y = 5;
-			int z = 2 * (i / 3) - 2;
+			int x = 0;
+			int y = 0;
+			int z = -5*i;
 			// set the coordinates relative to parent
 			thumbnailObj.transform.localPosition = new Vector3(x, y, z);
 			thumbnailObj.transform.localRotation = Quaternion.identity;

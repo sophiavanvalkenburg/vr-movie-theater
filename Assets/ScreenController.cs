@@ -20,8 +20,14 @@ public class ScreenController : MonoBehaviour {
 	
 	}
 
+	public void Load(string filename) {
+		videoPlayer.Load (filename);
+	}
+
 	public void Prepare() {
-		if (!isPlaying && videoPlayer.GetCurrentState () == MediaPlayerCtrl.MEDIAPLAYER_STATE.READY) {
+		Debug.Log ("media player state: " + videoPlayer.GetCurrentState ());
+		Debug.Log ("isPlaying: " + isPlaying);
+		if (!isPlaying /*&& videoPlayer.GetCurrentState () == MediaPlayerCtrl.MEDIAPLAYER_STATE.READY*/) {
 			audioPlayer.FadeOut (0.5f);
 			lightController.LightOff ();
 			StartCoroutine (WaitAndPlay ());
@@ -38,7 +44,7 @@ public class ScreenController : MonoBehaviour {
 	}
 
 	public void Play () {
-		if (!isPlaying && videoPlayer.GetCurrentState () == MediaPlayerCtrl.MEDIAPLAYER_STATE.READY) {
+		if (!isPlaying /*&& videoPlayer.GetCurrentState () == MediaPlayerCtrl.MEDIAPLAYER_STATE.READY*/) {
 			videoPlayer.Play ();	
 			isPlaying = true;
 		}
