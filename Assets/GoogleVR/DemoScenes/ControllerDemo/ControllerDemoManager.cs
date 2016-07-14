@@ -22,16 +22,14 @@ public class ControllerDemoManager : MonoBehaviour
 	public GameObject messageCanvas;
 	public Text messageText;
 
-	public Material thumbnailHoverMaterial;
-	public Material thumbnailInactiveMaterial;
 	public ScreenController screenController;
+	public LightController lightController;
 
 	private Renderer controllerCursorRenderer;
 
 	// Currently selected GameObject.
 	private GameObject selectedObject;
 
-	public LightController lightController;
 
 	void Awake ()
 	{
@@ -105,13 +103,15 @@ public class ControllerDemoManager : MonoBehaviour
 		if (GvrController.TouchDown) {
 			Debug.Log ("Clicking a thumbnail");
 			Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
-			selectedObject.GetComponent<MeshRenderer> ().material.color = Color.black;
+			SetObjTouchDownAppearance ();
 			if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
 				Debug.Log ("thumbnail has movie " + thumbnailObject.movieFileName);
-				mediaPlayer.Stop ();
-				mediaPlayer.Load (thumbnailObject.movieFileName);
-				mediaPlayer.Play ();
+				//mediaPlayer.Stop ();
+				//mediaPlayer.Load (thumbnailObject.movieFileName);
+				//mediaPlayer.Play ();
 			}
+		} else {
+			SetObjHoverAppearance ();
 		}
 	}
 
@@ -131,13 +131,25 @@ public class ControllerDemoManager : MonoBehaviour
 		}
 	}
 
+	private void SetObjTouchDownAppearance(){
+		selectedObject.GetComponent<MeshRenderer> ().material.color = Color.black;
+	}
+
+	private void SetObjHoverAppearance(){
+		selectedObject.GetComponent<MeshRenderer> ().material.color = Color.grey;
+	}
+
+	private void SetObjInactiveAppearance(){
+		selectedObject.GetComponent<MeshRenderer> ().material.color = Color.white;
+	}
+
 	private void SetSelectedObject (GameObject obj)
 	{
 		if (null != selectedObject) {
-			selectedObject.GetComponent<MeshRenderer> ().material.color = Color.white;
+			SetObjInactiveAppearance ();
 		}
 		if (null != obj) {
-			obj.GetComponent<MeshRenderer> ().material.color = Color.grey;
+			SetObjHoverAppearance ();
 		}
 		selectedObject = obj;
 	}
