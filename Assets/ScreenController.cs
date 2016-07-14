@@ -24,7 +24,7 @@ public class ScreenController : MonoBehaviour {
 		if (!isPlaying && videoPlayer.GetCurrentState () == MediaPlayerCtrl.MEDIAPLAYER_STATE.READY) {
 			audioPlayer.FadeOut (0.5f);
 			lightController.LightOff ();
-			StartCoroutine (Play ());
+			StartCoroutine (WaitAndPlay ());
 		}
 	}
 
@@ -33,10 +33,18 @@ public class ScreenController : MonoBehaviour {
 			videoPlayer.Stop ();
 			lightController.LightOn ();
 			StartCoroutine (CueBackgroundMusic ());
+			isPlaying = false;
 		}
 	}
 
-	private IEnumerator Play() {
+	public void Play () {
+		if (!isPlaying && videoPlayer.GetCurrentState () == MediaPlayerCtrl.MEDIAPLAYER_STATE.READY) {
+			videoPlayer.Play ();	
+			isPlaying = true;
+		}
+	}
+
+	public IEnumerator WaitAndPlay() {
 		yield return new WaitForSeconds (6);
 		videoPlayer.Play ();	
 		isPlaying = true;
