@@ -119,7 +119,7 @@ public class ControllerDemoManager : MonoBehaviour
 		if (Physics.Raycast (Vector3.zero, rayDirection, out hitInfo)) {
 			Debug.Log ("Raycast is true");
 			Debug.Log (hitInfo.collider.ToString ());
-			if (hitInfo.collider && hitInfo.collider.gameObject && hitInfo.collider.gameObject.tag == "Thumbnail") {
+			if (hitInfo.collider && hitInfo.collider.gameObject) {
 				Debug.Log ("Hitting something");
 				SetSelectedObject (hitInfo.collider.gameObject);
 			}
