@@ -22,7 +22,7 @@ public class ScreenController : MonoBehaviour {
 
 	public void Prepare() {
 		if (!isPlaying && videoPlayer.GetCurrentState () == MediaPlayerCtrl.MEDIAPLAYER_STATE.READY) {
-			audioPlayer.FadeOut (0.5f);
+			StartCoroutine(audioPlayer.FadeOut (2.5f));
 			lightController.LightOff ();
 			StartCoroutine (WaitAndPlay ());
 		}
@@ -32,7 +32,7 @@ public class ScreenController : MonoBehaviour {
 		if (isPlaying) {
 			videoPlayer.Stop ();
 			lightController.LightOn ();
-			StartCoroutine (CueBackgroundMusic ());
+			CueBackgroundMusic ();
 			isPlaying = false;
 		}
 	}
@@ -50,8 +50,7 @@ public class ScreenController : MonoBehaviour {
 		isPlaying = true;
 	}
 
-	private IEnumerator CueBackgroundMusic() {
-		yield return new WaitForSeconds (6);
-		audioPlayer.FadeIn (0.5f);
+	private void CueBackgroundMusic() {
+		StartCoroutine(audioPlayer.FadeIn (4.0f));
 	}
 }

@@ -23,6 +23,13 @@ public class LightController : MonoBehaviour {
 		GameObject.Find ("Theater").transform.localScale = new Vector3(0, 0, 0);
 	}
 
+	private IEnumerator PlayDebug() {
+		yield return new WaitForSeconds (5);
+		ScreenController screenController = GameObject.Find ("ScreenVideoManager").GetComponent<ScreenController>();
+		screenController.Prepare ();
+	}
+		
+
 	// Update is called once per frame
 	void Update () {
 		lightSwitch.isOn = isOn;
