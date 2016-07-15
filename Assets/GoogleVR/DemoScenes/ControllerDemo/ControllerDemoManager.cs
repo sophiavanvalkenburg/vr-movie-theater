@@ -113,7 +113,7 @@ public class ControllerDemoManager : MonoBehaviour
 			Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
 			SetObjTouchDownAppearance ();
 			if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
-				StopVideo (false);
+				StopVideo (false, false);
 				LoadVideo (thumbnailObject.movieFileName);
 				if (lightController.isOn) {
 					PrepareAndPlayVideo ();
@@ -187,10 +187,10 @@ public class ControllerDemoManager : MonoBehaviour
 		StartCoroutine (screenController.WaitAndPlay (seconds));
 	}
 		
-	public void StopVideo (bool lightOn=true)
+	public void StopVideo (bool lightOn=true, bool startMusic=true)
 	{
 		Debug.Log ("DemoManager: stopping video");
-		screenController.Stop ();
+		screenController.Stop (startMusic);
 		if (lightOn) {
 			lightController.LightOn ();
 		}

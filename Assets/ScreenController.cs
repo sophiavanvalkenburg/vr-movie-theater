@@ -47,10 +47,12 @@ public class ScreenController : MonoBehaviour {
 		}
 	}
 
-	public void Stop() {
+	public void Stop(bool startMusic=true) {
 		if (isPlaying || isPaused) {
 			videoPlayer.Stop ();
-			StartCoroutine(CueBackgroundMusic ());
+			if (startMusic) {
+				StartCoroutine (CueBackgroundMusic ());
+			}
 			isPlaying = false;
 			isPaused = false;
 		}

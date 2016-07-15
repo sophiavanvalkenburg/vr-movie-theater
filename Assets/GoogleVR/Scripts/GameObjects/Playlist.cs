@@ -7,13 +7,13 @@ public class Playlist : MonoBehaviour {
 	// hardcoded list of movies for now
 	private string[] movieFilenames = new string[3] {
 		"40169_1_23feralcats_wg_480p.mp4",
-		"c41047_1_sciencetake-coral-micro_wg_360p.mp4",
+		"39851_1_sciencetake-humanoid_wg_480p.mp4",
 		"41029_1_out-there-juno_wg_480p.mp4"
 	};
 
 	private string[] movieThumbnails = new string[3] {
 		"24APPRAISAL2-videoSixteenByNine1050-v2",
-		"13take_promo-videoSixteenByNine1050",
+		"sciencetake-humanoid-videoSixteenByNine1050-v3",
 		"out-there-juno-videoSixteenByNine1050"
 	};
 
