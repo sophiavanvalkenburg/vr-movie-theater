@@ -19,8 +19,6 @@ using System.Collections;
 public class ControllerDemoManager : MonoBehaviour
 {
 	public GameObject controllerPivot;
-	public GameObject messageCanvas;
-	public Text messageText;
 
 	public ScreenController screenController;
 	public LightController lightController;
@@ -43,9 +41,8 @@ public class ControllerDemoManager : MonoBehaviour
 	void Update ()
 	{
 		UpdatePointer ();
-		UpdateStatusMessage ();
 	}
-
+	
 	private void UpdatePointer ()
 	{
 		if (GvrController.State != GvrConnectionState.Connected) {
@@ -76,10 +73,22 @@ public class ControllerDemoManager : MonoBehaviour
 			case "Light":
 				selectLightSwitchAction ();
 				break;
+			case "Screen":
+				SelectScreenAction ();
+				break;
 			}
 		
 		}
     
+	}
+
+	private void SelectScreenAction()
+	{
+		if (GvrController.TouchDown) {
+			Debug.Log ("Clicking the screen");
+			TogglePauseVideo ();
+			PlayVideo ();
+		}
 	}
 
 	private void selectLightSwitchAction()
@@ -119,7 +128,7 @@ public class ControllerDemoManager : MonoBehaviour
 		RaycastHit hitInfo;
 		Vector3 rayDirection = GvrController.Orientation * Vector3.forward;
 		if (Physics.Raycast (Vector3.zero, rayDirection, out hitInfo)) {
-			if (hitInfo.collider && hitInfo.collider.gameObject && hitInfo.collider.gameObject.tag == "Thumbnail") {
+			if (hitInfo.collider && hitInfo.collider.gameObject) {
 				SetSelectedObject (hitInfo.collider.gameObject);
 			}
 		} else {
@@ -150,57 +159,9 @@ public class ControllerDemoManager : MonoBehaviour
 		selectedObject = obj;
 	}
 
-	/*
-  private void StartDragging() {
-    dragging = true;
-    selectedObject.GetComponent<Renderer>().material = cubeActiveMaterial;
-
-    // Reparent the active cube so it's part of the ControllerPivot object. That will
-    // make it move with the controller.
-    selectedObject.transform.SetParent(controllerPivot.transform, true);
-  }
-
-  private void EndDragging() {
-    dragging = false;
-    selectedObject.GetComponent<Renderer>().material = cubeHoverMaterial;
-
-    // Stop dragging the cube along.
-    selectedObject.transform.SetParent(null, true);
-  }
-  */
-
-	private void UpdateStatusMessage ()
+	public void TogglePauseVideo()
 	{
-		// This is an example of how to process the controller's state to display a status message.
-		switch (GvrController.State) {
-		case GvrConnectionState.Connected:
-        //messageCanvas.SetActive(false);
-			break;
-		case GvrConnectionState.Disconnected:
-			messageText.text = "Controller disconnected.";
-			messageText.color = Color.white;
-			messageCanvas.SetActive (true);
-			break;
-		case GvrConnectionState.Scanning:
-			messageText.text = "Controller scanning...";
-			messageText.color = Color.cyan;
-			messageCanvas.SetActive (true);
-			break;
-		case GvrConnectionState.Connecting:
-			messageText.text = "Controller connecting...";
-			messageText.color = Color.yellow;
-			messageCanvas.SetActive (true);
-			break;
-		case GvrConnectionState.Error:
-			messageText.text = "ERROR: " + GvrController.ErrorDetails;
-			messageText.color = Color.red;
-			messageCanvas.SetActive (true);
-			break;
-		default:
-        // Shouldn't happen.
-			Debug.LogError ("Invalid controller state: " + GvrController.State);
-			break;
-		}
+		screenController.TogglePause();
 	}
 
 	public void LoadVideo(string filename)
@@ -211,13 +172,13 @@ public class ControllerDemoManager : MonoBehaviour
 
 	public void PlayVideo ()
 	{
-		Debug.Log ("DemoManager: Light off! Preparing video");
+		Debug.Log ("DemoManager: Preparing video");
 		screenController.Prepare ();
 	}
 
 	public void StopVideo ()
 	{
-		Debug.Log ("DemoManager: Light on! stopping video");
+		Debug.Log ("DemoManager: stopping video");
 		screenController.Stop ();
 	}
 }

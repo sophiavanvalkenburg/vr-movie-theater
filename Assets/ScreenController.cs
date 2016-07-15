@@ -7,6 +7,7 @@ public class ScreenController : MonoBehaviour {
 	private AudioController audioPlayer;
 	private LightController lightController;
 	private bool isPlaying = false;
+	private bool isPaused = false;
 
 	// Use this for initialization
 	void Start () {
@@ -25,28 +26,45 @@ public class ScreenController : MonoBehaviour {
 	}
 
 	public void Prepare() {
-		Debug.Log ("media player state: " + videoPlayer.GetCurrentState ());
-		Debug.Log ("isPlaying: " + isPlaying);
-		if (!isPlaying /*&& videoPlayer.GetCurrentState () == MediaPlayerCtrl.MEDIAPLAYER_STATE.READY*/) {
+		if (!isPlaying) {
 			audioPlayer.FadeOut (0.5f);
 			lightController.LightOff ();
 			StartCoroutine (WaitAndPlay ());
 		}
 	}
 
-	public void Stop() {
+	public void Pause(){
 		if (isPlaying) {
+			videoPlayer.Pause ();
+			isPlaying = false;
+			isPaused = true;
+		}
+	}
+
+	public void TogglePause()
+	{
+		if (isPlaying) {
+			Pause ();
+		} else {
+			Play ();
+		}
+	}
+
+	public void Stop() {
+		if (isPlaying || isPaused) {
 			videoPlayer.Stop ();
 			lightController.LightOn ();
 			StartCoroutine (CueBackgroundMusic ());
 			isPlaying = false;
+			isPaused = false;
 		}
 	}
 
 	public void Play () {
-		if (!isPlaying /*&& videoPlayer.GetCurrentState () == MediaPlayerCtrl.MEDIAPLAYER_STATE.READY*/) {
+		if (!isPlaying) {
 			videoPlayer.Play ();	
 			isPlaying = true;
+			isPaused = false;
 		}
 	}
 
@@ -54,6 +72,7 @@ public class ScreenController : MonoBehaviour {
 		yield return new WaitForSeconds (6);
 		videoPlayer.Play ();	
 		isPlaying = true;
+		isPaused = false;
 	}
 
 	private IEnumerator CueBackgroundMusic() {
