@@ -22,6 +22,7 @@ public class ControllerDemoManager : MonoBehaviour
 
 	public ScreenController screenController;
 	public LightController lightController;
+	LightSwitch lightSwitch;
 
 	private Renderer controllerCursorRenderer;
 
@@ -36,6 +37,7 @@ public class ControllerDemoManager : MonoBehaviour
 	void Start () {
 		lightController = GameObject.Find ("BackgroundVideoManager").GetComponent<LightController> ();
 		screenController = GameObject.Find ("ScreenVideoManager").GetComponent<ScreenController> ();
+		lightSwitch = GameObject.Find ("Lever").GetComponent<LightSwitch> ();
 	}
 
 	void Update ()
@@ -70,7 +72,7 @@ public class ControllerDemoManager : MonoBehaviour
 			case "Thumbnail": 
 				selectThumbnailAction ();
 				break;
-			case "Light":
+			case "Switch":
 				selectLightSwitchAction ();
 				break;
 			case "Screen":
@@ -93,7 +95,6 @@ public class ControllerDemoManager : MonoBehaviour
 
 	private void selectLightSwitchAction()
 	{
-		Toggle lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Toggle> ();
 
 		if (GvrController.TouchDown) {
 			if (lightSwitch.isOn) {
@@ -102,8 +103,7 @@ public class ControllerDemoManager : MonoBehaviour
 				StopVideo ();
 			}
 		} else {
-			//hovering
-			lightSwitch.Select ();
+			lightSwitch.Highlight ();
 		}
 	}
 
@@ -112,14 +112,14 @@ public class ControllerDemoManager : MonoBehaviour
 		if (GvrController.TouchDown) {
 			Debug.Log ("Clicking a thumbnail");
 			Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
-			SetObjTouchDownAppearance (selectedObject);
+			SetObjTouchDownAppearance ();
 			if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
 				StopVideo ();
 				LoadVideo (thumbnailObject.movieFileName);
 				PlayVideo ();
 			}
 		} else {
-			SetObjHoverAppearance (selectedObject);
+			SetObjHoverAppearance ();
 		}
 	}
 
@@ -136,25 +136,26 @@ public class ControllerDemoManager : MonoBehaviour
 		}
 	}
 
-	private void SetObjTouchDownAppearance(GameObject obj){
-		obj.GetComponent<MeshRenderer> ().material.color = Color.black;
+	private void SetObjTouchDownAppearance(){
+		selectedObject.GetComponent<MeshRenderer> ().material.color = Color.black;
 	}
 
-	private void SetObjHoverAppearance(GameObject obj){
-		obj.GetComponent<MeshRenderer> ().material.color = Color.cyan;
+	private void SetObjHoverAppearance(){
+		selectedObject.GetComponent<MeshRenderer> ().material.color = Color.cyan;
 	}
 
-	private void SetObjInactiveAppearance(GameObject obj){
-		obj.GetComponent<MeshRenderer> ().material.color = Color.white;
+	private void SetObjInactiveAppearance(){
+		selectedObject.GetComponent<MeshRenderer> ().material.color = Color.white;
 	}
 
 	private void SetSelectedObject (GameObject obj)
 	{
-		if (null != selectedObject) {
-			SetObjInactiveAppearance (selectedObject);
-		}
-		if (null != obj) {
-			SetObjHoverAppearance (obj);
+		if (null != selectedObject && obj != selectedObject) {
+			if (selectedObject.tag == "Thumbnail") {
+				SetObjInactiveAppearance ();
+			} else if (selectedObject.tag == "Switch") {
+				lightSwitch.RemoveHighlight ();
+			}
 		}
 		selectedObject = obj;
 	}

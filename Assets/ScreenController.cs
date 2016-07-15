@@ -25,7 +25,7 @@ public class ScreenController : MonoBehaviour {
 
 	public void Prepare() {
 		if (!isPlaying) {
-			audioPlayer.FadeOut (0.5f);
+			StartCoroutine(audioPlayer.FadeOut (2.5f));
 			StartCoroutine (WaitAndPlay ());
 		}
 	}
@@ -50,7 +50,7 @@ public class ScreenController : MonoBehaviour {
 	public void Stop() {
 		if (isPlaying || isPaused) {
 			videoPlayer.Stop ();
-			StartCoroutine (CueBackgroundMusic ());
+			CueBackgroundMusic ();
 			isPlaying = false;
 			isPaused = false;
 		}
@@ -71,8 +71,7 @@ public class ScreenController : MonoBehaviour {
 		isPaused = false;
 	}
 
-	private IEnumerator CueBackgroundMusic() {
-		yield return new WaitForSeconds (6);
-		audioPlayer.FadeIn (0.5f);
+	private void CueBackgroundMusic() {
+		StartCoroutine(audioPlayer.FadeIn (4.0f));
 	}
 }

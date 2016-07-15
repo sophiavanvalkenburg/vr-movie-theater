@@ -12,16 +12,23 @@ public class LightController : MonoBehaviour {
 	private bool isRendered = false;
 
 	MediaPlayerCtrl backgroundPlayer;
-	Toggle lightSwitch;
+	LightSwitch lightSwitch;
 
 	// Use this for initialization
 	void Start () {
 		isOn = true;
 		backgroundPlayer = GetComponent<MediaPlayerCtrl> ();
-		lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Toggle> ();
+		lightSwitch = GameObject.Find ("Lever").GetComponent<LightSwitch> ();
 		Debug.Log ("init lightSwitch state: " + lightSwitch.isOn);
 		GameObject.Find ("Theater").transform.localScale = new Vector3(0, 0, 0);
 	}
+
+	private IEnumerator PlayDebug() {
+		yield return new WaitForSeconds (5);
+		ScreenController screenController = GameObject.Find ("ScreenVideoManager").GetComponent<ScreenController>();
+		screenController.Prepare ();
+	}
+		
 
 	// Update is called once per frame
 	void Update () {
@@ -58,7 +65,6 @@ public class LightController : MonoBehaviour {
 		Debug.Log ("video state: " + backgroundPlayer.GetCurrentState ());
 		Debug.Log ("lightSwitch position: " + backgroundPlayer.GetSeekPosition ());
 		if (backgroundPlayer.GetSeekPosition () > 0) {
-//			backgroundPlayer.Load (backgroundPlayer.m_strFileName);
 			backgroundPlayer.Stop();
 		} else {
 			backgroundPlayer.SeekTo (lightOffStartSeekPosition);

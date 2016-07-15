@@ -5,11 +5,10 @@ public class AudioController : MonoBehaviour {
 
 	public AudioSource audioSource;
 
-	private float designatedVolume;
+	private float designatedVolume = .38f;
 
 	// Use this for initialization
 	void Start () {
-		designatedVolume = audioSource.volume; // pass by value?
 	}
 	
 	// Update is called once per frame
@@ -23,14 +22,13 @@ public class AudioController : MonoBehaviour {
 			audioSource.volume -= startVolume * Time.deltaTime / fadeTime;
 			yield return null;
 		}
-		audioSource.Stop ();
+		audioSource.Pause ();
 	}
 
 	public IEnumerator FadeIn (float fadeTime) {
 		audioSource.Play ();
-		float startVolume = audioSource.volume;
 		while (audioSource.volume < designatedVolume) {
-			audioSource.volume += startVolume * Time.deltaTime / fadeTime;
+			audioSource.volume += designatedVolume * Time.deltaTime / fadeTime;
 			yield return null;
 		}
 	}
