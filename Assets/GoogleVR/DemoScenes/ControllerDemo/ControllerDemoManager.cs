@@ -89,7 +89,6 @@ public class ControllerDemoManager : MonoBehaviour
 		if (GvrController.TouchDown) {
 			Debug.Log ("Clicking the screen");
 			TogglePauseVideo ();
-			PlayVideo ();
 		}
 	}
 
@@ -98,7 +97,7 @@ public class ControllerDemoManager : MonoBehaviour
 
 		if (GvrController.TouchDown) {
 			if (lightSwitch.isOn) {
-				PlayVideo ();
+				PrepareAndPlayVideo ();
 			} else {
 				StopVideo ();
 			}
@@ -114,9 +113,13 @@ public class ControllerDemoManager : MonoBehaviour
 			Thumbnail thumbnailObject = selectedObject.GetComponent<Thumbnail> ();
 			SetObjTouchDownAppearance ();
 			if (thumbnailObject != null && thumbnailObject.movieFileName != null) {
-				StopVideo ();
+				StopVideo (false);
 				LoadVideo (thumbnailObject.movieFileName);
-				PlayVideo ();
+				if (lightController.isOn) {
+					PrepareAndPlayVideo ();
+				} else {
+					PlayVideo ();
+				}
 			}
 		} else {
 			SetObjHoverAppearance ();
@@ -171,17 +174,25 @@ public class ControllerDemoManager : MonoBehaviour
 		screenController.Load (filename);
 	}
 
-	public void PlayVideo ()
+	public void PrepareAndPlayVideo ()
 	{
 		Debug.Log ("DemoManager: Preparing video");
 		lightController.LightOff ();
 		screenController.Prepare ();
 	}
 
-	public void StopVideo ()
+	public void PlayVideo()
+	{
+		Debug.Log ("DemoManager: playing video");
+		screenController.Play ();
+	}
+
+	public void StopVideo (bool lightOn=true)
 	{
 		Debug.Log ("DemoManager: stopping video");
 		screenController.Stop ();
-		lightController.LightOn ();
+		if (lightOn) {
+			lightController.LightOn ();
+		}
 	}
 }
