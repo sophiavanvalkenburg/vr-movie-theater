@@ -24,6 +24,7 @@ public class ControllerDemoManager : MonoBehaviour
 
 	public ScreenController screenController;
 	public LightController lightController;
+	LightSwitch lightSwitch;
 
 	private Renderer controllerCursorRenderer;
 
@@ -38,6 +39,7 @@ public class ControllerDemoManager : MonoBehaviour
 	void Start () {
 		lightController = GameObject.Find ("BackgroundVideoManager").GetComponent<LightController> ();
 		screenController = GameObject.Find ("ScreenVideoManager").GetComponent<ScreenController> ();
+		lightSwitch = GameObject.Find ("Lever").GetComponent<LightSwitch> ();
 	}
 
 	void Update ()
@@ -73,7 +75,7 @@ public class ControllerDemoManager : MonoBehaviour
 			case "Thumbnail": 
 				selectThumbnailAction ();
 				break;
-			case "Light":
+			case "Switch":
 				selectLightSwitchAction ();
 				break;
 			}
@@ -84,7 +86,6 @@ public class ControllerDemoManager : MonoBehaviour
 
 	private void selectLightSwitchAction()
 	{
-		Toggle lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Toggle> ();
 
 		if (GvrController.TouchDown) {
 			if (lightSwitch.isOn) {
@@ -93,8 +94,7 @@ public class ControllerDemoManager : MonoBehaviour
 				StopVideo ();
 			}
 		} else {
-			//hovering
-			lightSwitch.Select ();
+			lightSwitch.Highlight ();
 		}
 	}
 
@@ -122,7 +122,7 @@ public class ControllerDemoManager : MonoBehaviour
 		if (Physics.Raycast (Vector3.zero, rayDirection, out hitInfo)) {
 			Debug.Log ("Raycast is true");
 			Debug.Log (hitInfo.collider.ToString ());
-			if (hitInfo.collider && hitInfo.collider.gameObject && hitInfo.collider.gameObject.tag == "Thumbnail") {
+			if (hitInfo.collider && hitInfo.collider.gameObject) {
 				Debug.Log ("Hitting something");
 				SetSelectedObject (hitInfo.collider.gameObject);
 			}
@@ -145,11 +145,12 @@ public class ControllerDemoManager : MonoBehaviour
 
 	private void SetSelectedObject (GameObject obj)
 	{
-		if (null != selectedObject) {
-			SetObjInactiveAppearance ();
-		}
-		if (null != obj) {
-			SetObjHoverAppearance ();
+		if (null != selectedObject && obj != selectedObject) {
+			if (selectedObject.tag == "Thumbnail") {
+				SetObjInactiveAppearance ();
+			} else if (selectedObject.tag == "Switch") {
+				lightSwitch.RemoveHightlight ();
+			}
 		}
 		selectedObject = obj;
 	}

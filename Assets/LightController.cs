@@ -12,13 +12,13 @@ public class LightController : MonoBehaviour {
 	private bool isRendered = false;
 
 	MediaPlayerCtrl backgroundPlayer;
-	Toggle lightSwitch;
+	LightSwitch lightSwitch;
 
 	// Use this for initialization
 	void Start () {
 		isOn = true;
 		backgroundPlayer = GetComponent<MediaPlayerCtrl> ();
-		lightSwitch = GameObject.Find ("LightSwitch").GetComponent<Toggle> ();
+		lightSwitch = GameObject.Find ("Lever").GetComponent<LightSwitch> ();
 		Debug.Log ("init lightSwitch state: " + lightSwitch.isOn);
 		GameObject.Find ("Theater").transform.localScale = new Vector3(0, 0, 0);
 	}
