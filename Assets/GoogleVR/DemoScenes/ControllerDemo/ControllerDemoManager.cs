@@ -118,7 +118,7 @@ public class ControllerDemoManager : MonoBehaviour
 				if (lightController.isOn) {
 					PrepareAndPlayVideo ();
 				} else {
-					PlayVideo ();
+					PlayVideo (1);
 				}
 			}
 		} else {
@@ -181,12 +181,12 @@ public class ControllerDemoManager : MonoBehaviour
 		screenController.Prepare ();
 	}
 
-	public void PlayVideo()
+	public void PlayVideo(int seconds=6)
 	{
 		Debug.Log ("DemoManager: playing video");
-		screenController.Play ();
+		StartCoroutine (screenController.WaitAndPlay (seconds));
 	}
-
+		
 	public void StopVideo (bool lightOn=true)
 	{
 		Debug.Log ("DemoManager: stopping video");

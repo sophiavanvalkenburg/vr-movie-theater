@@ -23,10 +23,10 @@ public class ScreenController : MonoBehaviour {
 		videoPlayer.Load (filename);
 	}
 
-	public void Prepare() {
+	public void Prepare(int seconds=6) {
 		if (!isPlaying) {
 			StartCoroutine(audioPlayer.FadeOut (2.5f));
-			StartCoroutine (WaitAndPlay ());
+			StartCoroutine (WaitAndPlay (seconds));
 		}
 	}
 
@@ -64,8 +64,8 @@ public class ScreenController : MonoBehaviour {
 		}
 	}
 
-	public IEnumerator WaitAndPlay() {
-		yield return new WaitForSeconds (6);
+	public IEnumerator WaitAndPlay(int seconds=6) {
+		yield return new WaitForSeconds (seconds);
 		videoPlayer.Play ();	
 		isPlaying = true;
 		isPaused = false;
