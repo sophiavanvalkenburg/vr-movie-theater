@@ -12,6 +12,7 @@ public class ScreenController : MonoBehaviour {
 	void Start () {
 		videoPlayer = GetComponent<MediaPlayerCtrl> ();
 		audioPlayer = GameObject.Find ("Music").GetComponent<AudioController> ();
+		transform.localScale = new Vector3(0, 0, 0);
 	}
 	
 	// Update is called once per frame
@@ -51,6 +52,7 @@ public class ScreenController : MonoBehaviour {
 		if (isPlaying || isPaused) {
 			videoPlayer.Stop ();
 			if (startMusic) {
+				transform.localScale = new Vector3(0, 0, 0);
 				StartCoroutine (CueBackgroundMusic ());
 			}
 			isPlaying = false;
@@ -68,6 +70,7 @@ public class ScreenController : MonoBehaviour {
 
 	public IEnumerator WaitAndPlay(int seconds=6) {
 		yield return new WaitForSeconds (seconds);
+		transform.localScale = new Vector3(18, 11.28f, 20);
 		videoPlayer.Play ();	
 		isPlaying = true;
 		isPaused = false;

@@ -5,7 +5,7 @@ public class AudioController : MonoBehaviour {
 
 	public AudioSource audioSource;
 
-	private float designatedVolume = .38f;
+	public float designatedVolume;
 
 	// Use this for initialization
 	void Start () {
