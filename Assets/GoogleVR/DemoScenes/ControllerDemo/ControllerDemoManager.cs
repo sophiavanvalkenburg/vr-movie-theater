@@ -173,6 +173,7 @@ public class ControllerDemoManager : MonoBehaviour
 	public void PlayVideo ()
 	{
 		Debug.Log ("DemoManager: Preparing video");
+		lightController.LightOff ();
 		screenController.Prepare ();
 	}
 
@@ -180,5 +181,6 @@ public class ControllerDemoManager : MonoBehaviour
 	{
 		Debug.Log ("DemoManager: stopping video");
 		screenController.Stop ();
+		lightController.LightOn ();
 	}
 }

@@ -5,15 +5,13 @@ public class ScreenController : MonoBehaviour {
 
 	private MediaPlayerCtrl videoPlayer;
 	private AudioController audioPlayer;
-	private LightController lightController;
-	private bool isPlaying = false;
-	private bool isPaused = false;
+	public bool isPlaying = false;
+	public bool isPaused = false;
 
 	// Use this for initialization
 	void Start () {
 		videoPlayer = GetComponent<MediaPlayerCtrl> ();
 		audioPlayer = GameObject.Find ("Music").GetComponent<AudioController> ();
-		lightController = GameObject.Find ("BackgroundVideoManager").GetComponent<LightController> ();
 	}
 	
 	// Update is called once per frame
@@ -28,7 +26,6 @@ public class ScreenController : MonoBehaviour {
 	public void Prepare() {
 		if (!isPlaying) {
 			audioPlayer.FadeOut (0.5f);
-			lightController.LightOff ();
 			StartCoroutine (WaitAndPlay ());
 		}
 	}
@@ -53,7 +50,6 @@ public class ScreenController : MonoBehaviour {
 	public void Stop() {
 		if (isPlaying || isPaused) {
 			videoPlayer.Stop ();
-			lightController.LightOn ();
 			StartCoroutine (CueBackgroundMusic ());
 			isPlaying = false;
 			isPaused = false;
